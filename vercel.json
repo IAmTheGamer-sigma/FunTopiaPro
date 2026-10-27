@@ -1,0 +1,1 @@
+{"rewrites":[{"destination":"https://friendfun.onrender.com/api/:path*","source":"/api/:path*"}]}
