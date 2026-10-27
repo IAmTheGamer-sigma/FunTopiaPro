@@ -829,3 +829,16 @@ body.hk-corrupt #app { animation: hkJitter .18s infinite; }
 .lb-eyes { position: absolute; top: 18%; right: 12%; z-index: 5; font-size: 34px; pointer-events: none; opacity: 0; animation: lb-eyes-blink 5s infinite; }
 @keyframes lb-eyes-blink { 0%, 70%, 100% { opacity: 0; } 75%, 85% { opacity: .9; } 80% { opacity: .2; } }
 .lb-emotes button.on { background: rgba(124,108,245,.35); border-color: rgba(124,108,245,.7); }
+
+/* ---------- FunTopia Pro polish: violet/gold finish, deeper depth ---------- */
+.btn-primary:hover { box-shadow: 0 0 26px rgba(139,92,246,.55); }
+.btn-secondary:hover { background: #2a1a4e; }
+.topbar { background: rgba(19,10,36,.92); }
+.sidebar a.active { box-shadow: var(--glow), inset 0 0 0 1px rgba(255,215,0,.25); }
+.lb-logo-badge { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+.lb-play { background: linear-gradient(135deg, #8b5cf6, #ffd700); color: #1a0b2e; box-shadow: 0 0 22px rgba(139,92,246,.45); animation: lb-play-pulse 2.4s infinite; }
+.lb-play:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(255,215,0,.45); }
+@keyframes lb-play-pulse { 0%, 100% { box-shadow: 0 0 18px rgba(139,92,246,.4); } 50% { box-shadow: 0 0 30px rgba(255,215,0,.45); } }
+.lb-tile { transition: transform .12s, border-color .12s, background .12s; }
+.lb-tile:hover { background: rgba(139,92,246,.16); border-color: rgba(139,92,246,.5); transform: translateY(-2px); }
+input[type=text]:focus, input[type=password]:focus, input[type=number]:focus, select:focus, textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(139,92,246,.35); }

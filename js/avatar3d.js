@@ -11,7 +11,7 @@ function faceTexture(id) {
   const g = c.getContext('2d');
   g.fillStyle = '#111'; g.strokeStyle = '#111'; g.lineWidth = 7; g.lineCap = 'round';
   const st = id.slice(5).split('_')[0];
-  const eyes = (h = 18) => { g.beginPath(); g.ellipse(44, 50, 7, h / 2, 0, 0, Math.PI * 2); g.ellipse(84, 50, 7, h / 2, 0, 0, Math.PI * 2); g.fill(); };
+  const eyes = (h = 18) => { g.beginPath(); g.ellipse(44, 50, 7, h / 2, 0, 0, Math.PI * 2); g.ellipse(84, 50, 7, h / 2, 0, 0, Math.PI * 2); g.fill(); const prev = g.fillStyle; g.fillStyle = '#fff'; g.beginPath(); g.arc(42, 47, 2.2, 0, Math.PI * 2); g.arc(82, 47, 2.2, 0, Math.PI * 2); g.fill(); g.fillStyle = prev; };
   const smile = (y = 66, r = 26) => { g.beginPath(); g.arc(64, y, r, 0.2 * Math.PI, 0.8 * Math.PI); g.stroke(); };
   const closedHappy = () => { g.beginPath(); g.arc(44, 56, 10, 1.15 * Math.PI, 1.85 * Math.PI); g.arc(84, 56, 10, 1.15 * Math.PI, 1.85 * Math.PI); g.stroke(); };
   const heart = (x, y, s) => { g.beginPath(); g.moveTo(x, y + s); g.bezierCurveTo(x - s * 1.6, y, x - s * 0.7, y - s * 1.4, x, y - s * 0.5); g.bezierCurveTo(x + s * 0.7, y - s * 1.4, x + s * 1.6, y, x, y + s); g.fill(); };
@@ -526,7 +526,9 @@ function buildR6(avatar, opts = {}, smooth = false) {
   const H = HEADS[avatar.head] || HEADS.head_classic;
   if (H.custom) { H.custom(headPivot); }
   else {
-    const head = new THREE.Mesh(H.geo(), smooth ? new THREE.MeshStandardMaterial({ color: H.color || C.head, roughness: 0.4, metalness: 0.05 }) : mat(H.color || C.head));
+    const hGeo = H.geo();
+    const headGeo = (smooth && hGeo.type === 'BoxGeometry') ? new RoundedBoxGeometry(hGeo.parameters.width, hGeo.parameters.height, hGeo.parameters.depth, 2, 0.08) : hGeo;
+    const head = new THREE.Mesh(headGeo, smooth ? new THREE.MeshStandardMaterial({ color: H.color || C.head, roughness: 0.4, metalness: 0.05 }) : mat(H.color || C.head));
     head.position.y = H.h / 2; head.castShadow = true; headPivot.add(head);
     const faceMat = new THREE.MeshBasicMaterial({ map: faceTexture(avatar.face), transparent: true });
     const face = H.round
@@ -590,7 +592,7 @@ function buildR6(avatar, opts = {}, smooth = false) {
 }
 
 // Returns a THREE.Group; feet at y=0, facing +z. userData.limbs = { larm, rarm, lleg, rleg, head, torso }
-export function buildCharacter(avatar, opts = {}) { return buildR6(avatar, opts, false); }
+export function buildCharacter(avatar, opts = {}) { return buildR6(avatar, opts, true); }
 
 // Advanced graphics: same R6 shapes, smoother finish (slight bevel + gloss).
 export function buildCharacterSmooth(avatar, opts = {}) { return buildR6(avatar, opts, true); }

@@ -714,6 +714,8 @@ export class Game {
           const canvas = ov.querySelector('.news-anchor-canvas');
           const av = b.anchor === 'bot' ? NEWSBOY_AVATAR : (b.avatar || this.me.avatar || NEWSBOY_AVATAR);
           const r = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+          r.outputColorSpace = THREE.SRGBColorSpace;
+          r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.1;
           r.setSize(420, 420);
           const sc = new THREE.Scene();
           const studio = buildNewsStudio(THREE); sc.add(studio.group);

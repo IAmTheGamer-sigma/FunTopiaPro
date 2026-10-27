@@ -67,7 +67,7 @@ export async function lobbyPage(D) {
     <div class="lb-bg"></div>
     <div class="lb-3d"></div>
     <header class="lb-top">
-      <a class="lb-logo" href="#/home"><span class="lb-logo-badge">F</span> FUNTOPIA <span class="lb-tag">LOBBY</span></a>
+      <a class="lb-logo" href="#/home"><span class="lb-logo-badge">F</span> FUNTOPIA PRO <span class="lb-tag">LOBBY</span></a>
       <div class="lb-top-right">
         <span class="lb-tix" title="FunTix">🪙 ${fmt(me.funtix ?? 0)}</span>
         <a class="lb-chip" href="#/users/${encodeURIComponent(me.name)}">${avatarImgTag(me.avatar, 'headshot')}<b>${esc(me.name)}</b></a>
@@ -166,6 +166,9 @@ export async function lobbyPage(D) {
   // ---------- 3D stage ----------
   const holder = app.querySelector('.lb-3d');
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
   renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
   holder.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
@@ -174,16 +177,20 @@ export async function lobbyPage(D) {
   camera.position.set(0, 4.1, 13.8);
   camera.lookAt(0, 2.1, 0);
   scene.add(new THREE.HemisphereLight(0x9db4ff, 0x2a0f14, 0.85));
-  const key = new THREE.DirectionalLight(0xfff1d6, 1.6); key.position.set(4, 9, 7); scene.add(key);
+  const key = new THREE.DirectionalLight(0xfff1d6, 1.6); key.position.set(4, 9, 7);
+  key.castShadow = true; key.shadow.mapSize.set(2048, 2048);
+  key.shadow.camera.left = key.shadow.camera.bottom = -12; key.shadow.camera.right = key.shadow.camera.top = 12;
+  key.shadow.camera.near = 1; key.shadow.camera.far = 30; key.shadow.bias = -0.0005;
+  scene.add(key);
   const rimR = new THREE.PointLight(0xe8112d, 60, 30); rimR.position.set(-7, 3.5, -4); scene.add(rimR);
   const rimV = new THREE.PointLight(0x7c4dff, 55, 30); rimV.position.set(7, 2.5, -5); scene.add(rimV);
   const floor = new THREE.Mesh(new THREE.CircleGeometry(26, 48), new THREE.MeshStandardMaterial({ color: 0x101017, roughness: 0.35, metalness: 0.35 }));
-  floor.rotation.x = -Math.PI / 2; floor.position.y = -0.5; scene.add(floor);
+  floor.rotation.x = -Math.PI / 2; floor.position.y = -0.5; floor.receiveShadow = true; scene.add(floor);
   const stage = new THREE.Group(); scene.add(stage);
   const podium = (x, z, r, ringColor) => {
     const g = new THREE.Group();
     const disc = new THREE.Mesh(new THREE.CylinderGeometry(r, r * 1.15, 0.5, 40), new THREE.MeshStandardMaterial({ color: 0x1c1e28, roughness: 0.4, metalness: 0.5 }));
-    disc.position.y = -0.25; g.add(disc);
+    disc.position.y = -0.25; disc.receiveShadow = true; g.add(disc);
     const ring = new THREE.Mesh(new THREE.TorusGeometry(r * 0.98, 0.055, 10, 48), new THREE.MeshStandardMaterial({ color: ringColor, emissive: ringColor, emissiveIntensity: 1.6 }));
     ring.rotation.x = Math.PI / 2; ring.position.y = 0.02; g.add(ring);
     g.position.set(x, 0, z); stage.add(g); return g;
